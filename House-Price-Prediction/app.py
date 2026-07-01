@@ -1,12 +1,9 @@
 import streamlit as st
 import pandas as pd
 import pickle
+import joblib
 
-# ----------------------------
-# Load Model and Data
-# ----------------------------
-with open("house_price_model.pkl", "rb") as f:
-    model = pickle.load(f)
+model = joblib.load("house_price_model.joblib")
 
 with open("feature_columns.pkl", "rb") as f:
     feature_columns = pickle.load(f)
