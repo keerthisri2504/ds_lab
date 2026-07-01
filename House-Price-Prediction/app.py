@@ -2,17 +2,30 @@ import streamlit as st
 import pandas as pd
 import pickle
 import joblib
+from pathlib import Path
 
-model = joblib.load("house_price_model.joblib")
+# --------------------------------------------------
+# File Paths
+# --------------------------------------------------
+BASE_DIR = Path(__file__).resolve().parent
 
-with open("feature_columns.pkl", "rb") as f:
+MODEL_PATH = BASE_DIR / "house_price_model.joblib"
+FEATURE_PATH = BASE_DIR / "feature_columns.pkl"
+DATA_PATH = BASE_DIR / "Bengaluru_House_Data.csv"
+
+# --------------------------------------------------
+# Load Files
+# --------------------------------------------------
+model = joblib.load(MODEL_PATH)
+
+with open(FEATURE_PATH, "rb") as f:
     feature_columns = pickle.load(f)
 
-df = pd.read_csv("Bengaluru_House_Data.csv")
+df = pd.read_csv(DATA_PATH)
 
-# ----------------------------
+# --------------------------------------------------
 # Page Configuration
-# ----------------------------
+# --------------------------------------------------
 st.set_page_config(
     page_title="Bengaluru House Price Prediction",
     page_icon="🏠",
@@ -21,18 +34,13 @@ st.set_page_config(
 
 st.title("🏠 Bengaluru House Price Prediction")
 
-st.markdown("""
-Predict the estimated selling price of a house in Bengaluru using Machine Learning.
+st.write("Predict the estimated selling price of a house using Machine Learning.")
 
-Fill in the property details below and click **Predict Price**.
-""")
+st.markdown("---")
 
-st.divider()
-
-# ----------------------------
-# Input Section
-# ----------------------------
-
+# --------------------------------------------------
+# User Inputs
+# --------------------------------------------------
 col1, col2 = st.columns(2)
 
 with col1:
@@ -55,7 +63,6 @@ with col1:
     )
 
 with col2:
-
     balcony = st.number_input(
         "Balcony",
         min_value=0,
@@ -77,12 +84,11 @@ location = st.selectbox(
     sorted(df["location"].dropna().unique())
 )
 
-st.divider()
+st.markdown("---")
 
-# ----------------------------
+# --------------------------------------------------
 # Prediction
-# ----------------------------
-
+# --------------------------------------------------
 if st.button("Predict Price", use_container_width=True):
 
     input_df = pd.DataFrame(columns=feature_columns)
@@ -110,4 +116,4 @@ if st.button("Predict Price", use_container_width=True):
     st.success(f"🏠 Estimated House Price: ₹ {prediction:.2f} Lakhs")
 
 st.markdown("---")
-st.caption("Developed by Keerthi Sri | House Price Prediction using Machine Learning")
+st.caption("Developed by Keerthi Sri")
